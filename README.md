@@ -1,1 +1,1 @@
-Si es demasiado el proyecto que tengo en mente podría hacer simplemente una de las partes que propuse
+No se como pero me confundí de repositorio, lo subo ahora por que recién me percate de mi confusión al querer ver si estaba corregido. 
