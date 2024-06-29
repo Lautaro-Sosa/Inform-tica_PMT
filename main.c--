@@ -1,0 +1,102 @@
+#include <iostream>
+#include <fstream> // Incluye la biblioteca para trabajar con archivos
+
+double calcularPresion(double v, double t) {
+    const double R = 8.314;
+    return R * t / v;
+}
+
+double calcularTrabajoIsobarico(double v1, double v2, double p) {
+    return p * (v2 - v1);
+}
+
+double calcularCalorAdiabatico(double t1, double t2) {
+    return 0.0; // Sin transferencia de calor en proceso adiabático
+}
+
+int main() {
+    std::cout << "¿Que propiedad deseas calcular?\n";
+    std::cout << "1. Presion\n";
+    std::cout << "2. Temperatura\n";
+    std::cout << "3. Volumen especifico\n";
+
+    int opcion;
+    std::cin >> opcion;
+
+    double resultado;
+    std::string propiedad;
+
+    switch (opcion) {
+        case 1:
+            std::cout << "Volumen especifico (m^3/kg): ";
+            double v;
+            std::cin >> v;
+            std::cout << "Temperatura (K): ";
+            double t;
+            std::cin >> t;
+            resultado = calcularPresion(v, t);
+            propiedad = "presion";
+            break;
+        case 2:
+            std::cout << "Presion (Pa): ";
+            double p;
+            std::cin >> p;
+            std::cout << "Temperatura (K): ";
+            std::cin >> t;
+            resultado = calcularPresion(1.0, t);
+            propiedad = "temperatura";
+            break;
+        case 3:
+            std::cout << "Presion (Pa): ";
+            double p_volumen;
+            std::cin >> p_volumen;
+            std::cout << "Temperatura (K): ";
+            std::cin >> t;
+            resultado = 1.0 / calcularPresion(p_volumen, t);
+            propiedad = "volumen especifico";
+            break;
+        default:
+            std::cout << "Opcion no valida. Intentalo nuevamente.\n";
+            return 1;
+    }
+
+    std::cout << "Valor de " << propiedad << ": " << resultado << "\n";
+
+    // Crear archivo de datos para gnuplot (gráfico P-V)
+    std::ofstream dataFile("datos_sustancia.txt");
+    dataFile << resultado << "\n";
+    dataFile.close();
+
+    // Ejecutar gnuplot para generar el gráfico
+    system("gnuplot -persist -e \"plot 'datos_sustancia.txt' with linespoints title 'Diagrama P-V'\"");
+
+    if (opcion == 1) {
+        std::cout << "Volumen inicial (m^3/kg): ";
+        double v1, v2, p;
+        std::cin >> v1;
+        std::cout << "Volumen final (m^3/kg): ";
+        std::cin >> v2;
+        std::cout << "Trabajo en proceso isobarico: " << calcularTrabajoIsobarico(v1, v2, p) << " J\n";
+    }
+
+    if (opcion == 2) {
+        std::cout << "Temperatura inicial (K): ";
+        double t1, t2;
+        std::cin >> t1;
+        std::cout << "Temperatura final (K): ";
+        std::cin >> t2;
+        std::cout << "Calor en proceso adiabatico: " << calcularCalorAdiabatico(t1, t2) << " J\n";
+    }
+
+    // Cálculos para procesos isocóricos
+    if (opcion == 3) {
+        std::cout << "Temperatura inicial (K): ";
+        double t1, t2, v;
+        std::cin >> t1;
+        std::cout << "Temperatura final (K): ";
+        std::cin >> t2;
+        std::cout << "Cambio de presion en proceso isocorico: " << calcularPresion(v, t2) - calcularPresion(v, t1) << " Pa\n";
+    }
+
+return 0;
+}
